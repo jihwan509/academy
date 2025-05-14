@@ -1,7 +1,9 @@
 package com.example.academy.config;
 
 import com.example.academy.config.auth.UserDetailsServiceImpl;
+import com.example.academy.service.PrincipalOauth2UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,29 +15,35 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.io.PrintWriter;
-
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
-
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+    private final PrincipalOauth2UserService principalOauth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .cors().and()
+        http.csrf(csrf -> csrf.disable())
+                .cors(cors -> {})
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/admin").hasRole("ADMIN")
                         .requestMatchers("/api/user").authenticated()
                         .anyRequest().permitAll()
                 )
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(principalOauth2UserService)
+                        )
+                        .successHandler((request, response, authentication) -> {
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                            request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+                            response.sendRedirect("http://localhost:3000/home"); // ✅ 이게 핵심!
+                        })
+                )
+
                 .formLogin(form -> form
                         .loginProcessingUrl("/loginProc")
                         .usernameParameter("email")
@@ -54,7 +62,11 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/logoutOk")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.sendRedirect(
+                                    "https://accounts.google.com/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:3000/"
+                            );
+                        })
                         .deleteCookies("JSESSIONID")
                 );
         return http.build();
@@ -71,10 +83,5 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

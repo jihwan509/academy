@@ -31,6 +31,10 @@ function Login() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google?prompt=login";
+  };
+
   return (
     <div>
       <h2>로그인</h2>
@@ -40,6 +44,7 @@ function Login() {
         <button type="submit">로그인</button>
       </form>
       <Link to="/join">회원가입</Link>
+      <button onClick={handleGoogleLogin}>구글로 로그인</button>
     </div>
   );
 }
