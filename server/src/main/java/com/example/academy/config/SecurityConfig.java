@@ -40,7 +40,8 @@ public class SecurityConfig {
                         .successHandler((request, response, authentication) -> {
                             SecurityContextHolder.getContext().setAuthentication(authentication);
                             request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-                            response.sendRedirect("http://localhost:3000/home"); // ✅ 이게 핵심!
+
+                            response.sendRedirect("http://localhost:3000/oauth2/redirect");  // ✅ 프론트 리디렉션
                         })
                 )
 
@@ -63,12 +64,14 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessHandler((request, response, authentication) -> {
-                            response.sendRedirect(
-                                    "https://accounts.google.com/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:3000/"
-                            );
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"message\": \"Logged out\"}");
+                            response.getWriter().flush();
                         })
                         .deleteCookies("JSESSIONID")
                 );
+
         return http.build();
     }
 
