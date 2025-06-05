@@ -1,0 +1,125 @@
+.admin-join-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9fafb;
+  padding: 2rem;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+.admin-join-card {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.admin-join-card h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.admin-join-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-join-form input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-join-form input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.business-number-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.business-number-group input {
+  flex: 1;
+  min-width: 0;
+}
+
+.business-number-group button {
+  padding: 0.6rem 0.9rem;
+  background-color: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.business-number-group button:hover {
+  background-color: #059669;
+}
+
+.business-number-group button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.admin-join-form button[type="submit"] {
+  background-color: #2563eb;
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.admin-join-form button[type="submit"]:hover {
+  background-color: #1d4ed8;
+}
+
+.admin-join-form button[type="submit"]:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  margin-top: 1rem;
+  color: #dc2626;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.success-msg {
+  margin-top: 1rem;
+  color: #10b981;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* 반응형 대응 */
+@media (max-width: 480px) {
+  .admin-join-card {
+    padding: 1.5rem;
+  }
+}
